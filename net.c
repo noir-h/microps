@@ -6,7 +6,6 @@
 
 #include "util.h"
 #include "net.h"
-#include "ip.h"
 
 struct net_protocol {
     struct net_protocol *next;
@@ -191,6 +190,9 @@ net_input(uint16_t type, const uint8_t *data, size_t len, struct net_device *dev
     return 0;
 }
 
+#include "ip.h"
+#include "icmp.h"
+
 int
 net_init(void)
 {
@@ -201,6 +203,10 @@ net_init(void)
     }
     if (ip_init() == -1) {
         errorf("ip_init() failure");
+        return -1;
+    }
+    if (icmp_init() == -1) {
+        errorf("icmp_init() failure");
         return -1;
     }
     infof("success");
